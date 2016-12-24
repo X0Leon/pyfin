@@ -2,7 +2,7 @@
 
 Financial toolkit for quantitative investments of China stock.
 
-用于量化投资和金融市场分析的常用工具库。当前版本：Version 1.0a (ready, 2016/12)
+用于量化投资和金融市场分析的常用工具库。当前版本：Version 1.0a (2016/12)
 
 特性：提供收益评估、数据处理、绘图等功能；主要依赖numpy/scipy/pandas等。
 
@@ -22,9 +22,9 @@ Financial toolkit for quantitative investments of China stock.
     
 ## Changelog
 
-2016年12月?日，Version 1.0a
+2016年12月24日，Version 1.0a
 
-* 实现大量用于收益评估、数据处理和绘图等功能的方法
+* 收益评估、数据处理和绘图等诸多方法
     
 Focus on Chinese market, refer to Philippe's [ffn](https://github.com/pmorissette/ffn) for American market.
 

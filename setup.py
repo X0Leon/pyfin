@@ -16,8 +16,8 @@ setuptools.setup(
     version='1.0.0a',
     author='X0Leon',
     author_email='pku09zl@gmail.com',
-    description='Financial toolkit for Quant of China market',
-    keywords='python finance quant functions',
+    description='Financial toolkit for Quantitative investment',
+    keywords='python finance quant toolkit',
     url='https://github.com/X0Leon/pyfin',
     license='MIT',
     install_requires=[
