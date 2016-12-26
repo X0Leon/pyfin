@@ -1,22 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import setuptools
-import codecs
-import os
-
-
-def local_file(filename):
-    return codecs.open(
-        os.path.join(os.path.dirname(__file__), filename), 'r', 'utf-8'
-    )
 
 
 setuptools.setup(
     name="pyfin",
-    version='1.0.0a',
-    author='X0Leon',
+    version='1.0.0a1',
+    author='Leon Zhang',
     author_email='pku09zl@gmail.com',
-    description='Financial toolkit for Quantitative investment',
+    description='Financial toolkit for Quant',
     keywords='python finance quant toolkit',
     url='https://github.com/X0Leon/pyfin',
     license='MIT',
@@ -27,10 +19,10 @@ setuptools.setup(
         'tabulate',
         'matplotlib',
         'scikit-learn',
-        'tushare'
+        'requests'
     ],
     packages=['pyfin'],
-    long_description=local_file('README.md').read(),
+    long_description='Financial toolkit for Quantitative investment of Chinese market built on pandas.',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Topic :: Software Development :: Libraries',

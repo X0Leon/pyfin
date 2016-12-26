@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+
+import pandas as pd
+import requests
+
 import pyfin
 import pyfin.utils as utils
-import pandas as pd
-import tushare as ts
 
 
 def get(symbols, provider=None, common_dates=False, forward_fill=True,
@@ -30,15 +33,15 @@ def get(symbols, provider=None, common_dates=False, forward_fill=True,
 
     data = {}
     for symbol in symbols:
-        t = symbol
+        s = symbol
         f = None
 
         bits = symbol.split(symbol_field_sep, 1)
         if len(bits) == 2:
-            t = bits[0]
+            s = bits[0]
             f = bits[1]
 
-        data[symbol] = provider(symbol=t, field=f, **kwargs)
+        data[symbol] = provider(s, field=f, **kwargs)
 
     df = pd.DataFrame(data)
     df = df[symbols]
@@ -63,24 +66,51 @@ def get(symbols, provider=None, common_dates=False, forward_fill=True,
     return df
 
 
-def web(symbol, field=None, start=None, end=None, source='tushare'):
+def web(symbol, field=None, start=None, end=None, source='netease'):
     """
-    TuShare数据源
+    web数据源，可选：netease
     """
-    if source == 'tushare' and field is None:
-        field = 'close'
-
-    tmp = ts.get_k_data(code=symbol, start=start, end=end)
-    tmp.index = pd.to_datetime(tmp['date'], format='%Y-%m-%d')
-    tmp.index.name = 'datetime'
-
+    tmp = None
+    if source == 'netease':
+        tmp = _get_netease(symbol, start=start, end=end)
     if tmp is None:
         raise ValueError('Failed to retrieve data for %s:%s' % (symbol, field))
 
-    if field:
+    if field is not None:
         return tmp[field]
     else:
-        return tmp
+        return tmp['close']
+
+
+def _get_netease(symbol, start='', end=''):
+    """
+    网易财经数据源，获得日线数据
+    示例：http://quotes.money.163.com/service/chddata.html?code=600008&start=20150508&end=20150512
+    """
+    if not start:
+        start = (datetime.datetime.now().date() + datetime.timedelta(days=-300)).strftime('%Y-%m-%d')
+    if not end:
+        end = datetime.datetime.now().date().strftime('%Y-%m-%d')
+    start = start.replace('-', '')
+    end = end.replace('-', '')
+    data_url = "http://quotes.money.163.com/service/chddata.html?code=0" + symbol + "&start=" + start + "&end=" + end
+    r = requests.get(data_url, stream=True)
+    lines = r.content.decode('gb2312').split("\n")
+    lines = lines[1:len(lines) - 1]
+    bars = []
+    for line in lines[::-1]:
+        stock_info = line.split(",", 14)
+        s_date = stock_info[0]
+        s_close = float(stock_info[3])
+        s_high = float(stock_info[4])
+        s_low = float(stock_info[5])
+        s_open = float(stock_info[6])
+        s_volume = float(stock_info[11])
+        bars.append([s_date, s_open, s_high, s_low, s_close, s_volume])
+    bars = pd.DataFrame(bars, columns=['datetime', 'open', 'high', 'low', 'close', 'volume'])
+    bars.index = pd.to_datetime(bars['datetime'], format='%Y-%m-%d')
+
+    return bars
 
 
 def csv(symbol, path='data.csv', field='', **kwargs):

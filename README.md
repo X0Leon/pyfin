@@ -16,7 +16,7 @@ Financial toolkit for quantitative investments of China stock.
 示例：
     
     import pyfin
-    closes_df = pyfin.get(['600008','600018','600028'], start='2015-01-01', end='2016-12-22')
+    closes_df = pyfin.get(['600008','600018'], start='2015-01-01')
     stats = closes_df.calc_stats()
     print(stats.display())
     
